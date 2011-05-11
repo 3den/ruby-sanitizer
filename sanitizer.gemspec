@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Marcelo Eden"]
   s.email       = ["edendroid@gmail.com"]
-  s.homepage    = "http://github.com/3den/sanitizer"
+  s.homepage    = "http://github.com/3den/ruby-sanitizer"
   s.summary     = %q{The simplest string cleaner ever made}
   s.description = %q{Sanitizer.clean(text)}
 
