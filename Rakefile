@@ -22,6 +22,7 @@ Jeweler::Tasks.new do |gem|
   gem.email = "edendroid@gmail.com"
   gem.authors = ["Marcelo Eden"]
   # dependencies defined in Gemfile
+  gem.add_dependency("htmlentities", ">= 4.3.0")
 end
 Jeweler::RubygemsDotOrgTasks.new
 

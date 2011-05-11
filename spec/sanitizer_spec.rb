@@ -28,6 +28,11 @@ describe Sanitizer do
       output = Sanitizer.sanitize(html)
       output.should == 'Eu &amp; você'
     end
+
+    it "should convert invalid chars to html entries"
+      text = "João foi caçar"
+      output = Sanitizer.html_escape(text)
+      output.should == "João foi caçar"
   end
   
   describe "strip_tags" do
