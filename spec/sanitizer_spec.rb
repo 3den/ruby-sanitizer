@@ -35,6 +35,12 @@ describe Sanitizer do
       output = Sanitizer.sanitize(html)
       output.should == "Eu &amp; voc&ecirc;"
     end
+    
+    it "should clean '&' entries even when it is attached to a letter" do
+      html = "M&M"
+      output = Sanitizer.sanitize(html)
+      output.should == "M&amp;M"
+    end
   end
   
   describe "html_encode" do
