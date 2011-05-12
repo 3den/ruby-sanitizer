@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# encoding: utf-8
 $:.push File.expand_path("../lib", __FILE__)
 require "sanitizer/version"
 
@@ -20,6 +20,5 @@ Gem::Specification.new do |s|
   
   # Dependencies
   s.add_development_dependency("rspec", "~> 2.3.0")
-  s.add_development_dependency("ruby-debug")
   s.add_dependency("htmlentities", "~> 4.3.0")
 end
