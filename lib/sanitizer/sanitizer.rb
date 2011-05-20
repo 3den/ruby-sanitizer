@@ -15,6 +15,7 @@ module Sanitizer
     def clean_spaces(text)
       output = text.dup
       output.gsub!(/\s+/, " ")
+      output.strip!
       output
     end
     
