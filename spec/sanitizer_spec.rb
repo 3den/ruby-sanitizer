@@ -18,6 +18,12 @@ describe Sanitizer do
       output.should == 'Eu &amp; voc&ecirc; como Vai'
     end
     
+    it "should not break &#8220; entities" do
+      html = "&#8220; Testando"
+      output = Sanitizer.sanitize(html)
+      output.should == "&#8220; Testando"
+    end
+    
     it "should clean spaces and tags" do
       html = "<p>Oi <b>como</b>     
     Vai</p>"

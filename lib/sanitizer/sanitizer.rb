@@ -5,57 +5,89 @@ module Sanitizer
   
   # All self.methods 
   class << self
-    def sanitize(text)
-      text = strip_tags(text)
-      text = clean_spaces(text)
-      text = html_encode(text)
+    
+    # Sanitize to clean text
+    def sanitize!(text)
+      strip_tags!(text)
+      clean_spaces!(text)
+      text.replace html_encode(text)
       text
     end
+    
+    def sanitize(text)
+      sanitize! text.dup
+    end
         
-    def clean_spaces(text)
-      output = text.dup
-      output.gsub!(/\s+/, " ")
-      output.strip!
-      output
+    # Clean retundant spaces
+    def clean_spaces!(text)
+      text.gsub!(/\s+/, " ")
+      text.strip!
+      text
     end
     
-    def strip_comments(text)
-      output = text.dup
-      output.gsub!(/(\<\!\-\-\b*[^\-\-\>]*.*?\-\-\>)/ui, "")
-      output.gsub!(/(\&lt;\s?\!--.*\s?--\&gt;)/uim, "")
-      output
+    def clean_spaces(text)
+      clean_spaces! text.dup
+    end
+    
+    # remove comments
+    def strip_comments!(text)
+      text.gsub!(/(\<\!\-\-\b*[^\-\-\>]*.*?\-\-\>)/ui, "")
+      text.gsub!(/(\&lt;\s?\!--.*\s?--\&gt;)/uim, "")
+      text
     end
 
+    def strip_comments(text)
+      strip_comments! text.dup
+    end
+    
     # Remove all <script> and <style> tags
-    def strip_disallowed_tags(text)
-      output = text
-      output.gsub!(/(<script\s*.*>.*<\/script>)/uim, "")
-      output.gsub!(/(<script\s*.*\/?>)/uim, "")
-      output.gsub!(/(<link\s*.*\/?>)/uim, "")
-      output.gsub!(/(<style\s*.*>.*<\/style>)/uim, "")
+    def strip_disallowed_tags!(text)
+      text.gsub!(/(<script\s*.*>.*<\/script>)/uim, "")
+      text.gsub!(/(<script\s*.*\/?>)/uim, "")
+      text.gsub!(/(<link\s*.*\/?>)/uim, "")
+      text.gsub!(/(<style\s*.*>.*<\/style>)/uim, "")
 
       # Stripping html entities too
-      output.gsub!(/(\&lt;script\s*.*\&gt;.*\&lt;\/script\&gt;)/uim, "")
-      output.gsub!(/(\&lt;script\s*.*\/?\&gt;)/uim, "")
-      output.gsub!(/(\&lt;link\s*.*\/?\&gt;)/uim, "")
-      output.gsub!(/(\&lt;style\s*.*\&gt;.*\&lt;\/style\&gt;)/uim, "")
-      output
+      text.gsub!(/(\&lt;script\s*.*\&gt;.*\&lt;\/script\&gt;)/uim, "")
+      text.gsub!(/(\&lt;script\s*.*\/?\&gt;)/uim, "")
+      text.gsub!(/(\&lt;link\s*.*\/?\&gt;)/uim, "")
+      text.gsub!(/(\&lt;style\s*.*\&gt;.*\&lt;\/style\&gt;)/uim, "")
+      text
     end
+    
+    def strip_disallowed_tags(text)
+      strip_disallowed_tags! text.dup
+    end 
 
     # Remove all tags from from text
-    def strip_tags(text, *tags)
-      output = text.dup
+    def strip_tags!(text, *tags)
       if tags.empty? # clear all tags by default
-        output.gsub!(/<\/?[^>]*>/uim, "")
-        output.gsub!(/\&lt;\/?[^\&gt;]*\&gt;/uim, "")
+        text.gsub!(/<\/?[^>]*>/uim, "")
+        text.gsub!(/\&lt;\/?[^\&gt;]*\&gt;/uim, "")
       else # clean only selected tags 
         strip = tags.map do |tag|  
           %Q{(#{tag})}
         end.join('|')
-        output.gsub!(/<\/?(#{strip})[^>]*>/uim, "")
-        output.gsub!(/\&lt;\/?(#{strip})[^\&gt;]*\&gt;/uim, "")
+        text.gsub!(/<\/?(#{strip})[^>]*>/uim, "")
+        text.gsub!(/\&lt;\/?(#{strip})[^\&gt;]*\&gt;/uim, "")
       end
-      output
+      text
+    end
+    
+    def strip_tags(text, *tags)
+      strip_tags! text.dup, *tags
+    end
+    
+    # Alguns feeds retornam tags "escapadas" dentro do conteúdo (ex: &lt;br/&gt;)
+    # Este método deve ser utilizado após o stripping e sanitização, para não deixar que essas tags sejam exibidas como conteúdo
+    def entities_to_chars!(text)
+      text.gsub!(/\&lt;/uim, "<")
+      text.gsub!(/\&gt;/uim, ">")
+      text
+    end
+    
+    def entities_to_chars(text)
+      entities_to_chars! text.dup
     end
 
     # Convert invalid chars to HTML Entries
@@ -68,16 +100,6 @@ module Sanitizer
     def html_decode(text)
       text = text.to_s  
       @@htmle.decode(text, :named)
-    end
-    
-    # Alguns feeds retornam tags "escapadas" dentro do conteúdo (ex: &lt;br/&gt;)
-    # Este método deve ser utilizado após o stripping e sanitização, para não deixar que essas tags sejam exibidas como conteúdo
-    def entities_to_chars(text)
-      output = text.dup
-      output.gsub!(/\&lt;/uim, "<")
-      output.gsub!(/\&gt;/uim, ">")
-      output
-    end
-
+    end   
   end # self
 end
