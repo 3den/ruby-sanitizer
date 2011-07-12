@@ -65,6 +65,16 @@ describe Sanitizer do
     end
   end
   
+  describe "html_decode" do
+
+    it "should convert html entries to chars" do
+      text = "Eu &amp; Tu"
+      output = Sanitizer.html_decode(text)
+      output.should == "Eu & Tu"
+    end
+    
+  end
+  
   describe "strip_tags" do 
     it "should remove only <b> tags" do
       html = "<p>Oi <b>como</b> <a href='/xxx/'>Vai</a></p><!-- s -->" 

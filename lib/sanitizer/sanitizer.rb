@@ -99,7 +99,7 @@ module Sanitizer
     # Convert invalid chars to HTML Entries
     def html_decode(text)
       text = text.to_s  
-      @@htmle.decode(text, :named)
+      @@htmle.decode(text)
     end   
   end # self
 end
